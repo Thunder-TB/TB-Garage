@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage UI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app" style="display: none;">
+        <div class="container">
+            <div class="search-wrapper">
+                <input type="text" id="search" placeholder="Search vehicle by plate or name">
+            </div>
+
+            <div class="vehicle-list" id="vehicle-list">
+                </div>
+
+            <div class="footer">
+                Total vehicles: <span id="total-count">0</span>
+            </div>
+        </div>
+    </div>
+    <div id="key-fob" style="display: none;">
+        <div class="fob-container">
+            <div class="fob-header">
+                <i class="fa-solid fa-wifi"></i>
+                <span>SMART KEY</span>
+            </div>
+            
+            <div class="fob-grid">
+                <button class="fob-btn" onclick="sendAction('lock')">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>LOCK</span>
+                </button>
+                
+                <button class="fob-btn" onclick="sendAction('unlock')">
+                    <i class="fa-solid fa-lock-open"></i>
+                    <span>UNLOCK</span>
+                </button>
+
+                <button class="fob-btn danger" onclick="sendAction('engine')">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>START/STOP</span>
+                </button>
+
+                <button class="fob-btn" onclick="sendAction('trunk')">
+                    <i class="fa-solid fa-truck-ramp-box"></i>
+                    <span>TRUNK</span>
+                </button>
+
+                <button class="fob-btn full-width" onclick="sendAction('lights')">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>LIGHTS</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="transfer-modal" class="modal-backdrop">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                <span>TRANSFER VEHICLE</span>
+            </div>
+
+            <div class="modal-plate-display" id="modal-plate-display">
+                </div>
+
+            <div class="transfer-tabs">
+                <div class="tab-btn active" id="tab-player" onclick="switchTab('player')">
+                    <i class="fa-solid fa-user"></i> PLAYER
+                </div>
+                <div class="tab-btn" id="tab-garage" onclick="switchTab('garage')">
+                    <i class="fa-solid fa-warehouse"></i> GARAGE
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div id="section-player" class="input-group fade-in">
+                    <label>CITIZEN ID / SERVER ID</label>
+                    <input type="number" id="transfer-target-id" placeholder="Enter ID (e.g. 102)">
+                </div>
+
+                <div id="section-garage" class="input-group fade-in" style="display: none;">
+                    <label>DESTINATION GARAGE</label>
+                    <div class="custom-select-wrapper">
+                        <select id="transfer-target-garage">
+                            </select>
+                        <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeTransferModal()">CANCEL</button>
+                <button class="btn-confirm" onclick="submitTransfer()">CONFIRM</button>
+            </div>
+
+        </div>
+    </div>
+    <div id="custom-textui" class="textui-container" style="display: none;">
+        <div class="textui-wrapper">
+            <div class="textui-key" id="textui-key">E</div>
+            <div class="textui-sep"></div>
+            <div class="textui-label" id="textui-label">OPEN GARAGE</div>
+        </div>
+    </div>
+    <div id="impound-modal" class="modal-backdrop">
+    <div class="modal-content" style="width: 450px;">
+        <div class="modal-header">
+            <i class="fa-solid fa-gavel"></i>
+            <span>POLICE IMPOUND</span>
+        </div>
+
+        <div class="modal-plate-display" id="impound-plate-display">
+            TARGET: ABC 123
+        </div>
+
+        <div class="modal-body">
+            <div class="input-group">
+                <label>REASON</label>
+                <input type="text" id="imp-reason" placeholder="e.g. Excessive Speeding">
+            </div>
+
+            <div class="input-group">
+                <label>LOCK DURATION</label>
+                
+                <div class="time-presets">
+                    <button class="time-btn" onclick="setImpoundTime(0, this)">INSTANT</button>
+                    <button class="time-btn" onclick="setImpoundTime(1, this)">1 HR</button>
+                    <button class="time-btn" onclick="setImpoundTime(3, this)">3 HR</button>
+                    <button class="time-btn" onclick="setImpoundTime(6, this)">6 HR</button>
+                    <button class="time-btn" onclick="setImpoundTime(12, this)">12 HR</button>
+                    <button class="time-btn" onclick="setImpoundTime(24, this)">24 HR</button>
+                </div>
+
+                <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
+                    <input type="number" id="imp-time-custom" placeholder="Custom Hours..." oninput="clearTimeButtons()">
+                    <span style="font-size: 10px; color: #666; font-weight: 700;">HOURS</span>
+                </div>
+                <input type="hidden" id="final-minutes" value="">
+            </div>
+
+            <div class="input-group">
+                <label>FINE AMOUNT ($)</label>
+                <input type="number" id="imp-fine" placeholder="Enter amount">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeImpoundModal()">CANCEL</button>
+            <button class="btn-confirm" onclick="submitImpound()">CONFIRM</button>
+        </div>
+    </div>
+</div>
+</div>
+<div id="rename-modal" class="modal-backdrop">
+    <div class="modal-content" style="width: 350px;">
+        <div class="modal-header">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>RENAME VEHICLE</span>
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <label>NEW NICKNAME</label>
+                <input type="text" id="new-nickname" placeholder="Enter name (e.g. My Daily Drifter)">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeRenameModal()">CANCEL</button>
+            <button class="btn-confirm" onclick="submitRename()">SAVE NAME</button>
+        </div>
+    </div>
+</div>
+    <script src="script.js"></script>
+</body>
+</html>
