@@ -7,7 +7,7 @@ A high-performance, feature-rich garage and vehicle management system built for 
 TB-Garage is designed with optimization and user experience in mind. It offers a clean UI, support for multiple vehicle types (cars, boats, aircraft), and a robust administrative suite. Whether you are running a serious RP server or a casual freeroam environment, this script provides the stability you need.
 
 ### 📸 Preview
-![Image](https://github.com/user-attachments/assets/0ee71b36-98b6-4585-a655-496fc3d2c4cb)
+![Image](https://github.com/Thunder-TB/TB-Garage/blob/2118ca827029c65be8eae16dac97ef970da4e92e/tbgarage.png)
 
 ### ✨ Key Features
 🏦 Diverse Garage Types
